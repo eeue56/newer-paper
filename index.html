@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Page.Main</title>
+    <script type="text/javascript" src="elm.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) { 
+            console.log('starting elm..');
+            var flags = {};
+            var roomName = localStorage.getItem('roomName');
+            if (roomName) {
+                flags['roomName'] = roomName;
+            }
+
+            var app = Elm.Page.Main.fullscreen(flags);
+
+            app.ports.fromElmToJs.subscribe((portInfo) =>{
+                if (portInfo.type === 'StoreInLocalStorage') {
+                    localStorage.setItem('roomName', portInfo.value.roomName);
+                } 
+            });
+        });
+    </script>
+</body>
+
+</html>
