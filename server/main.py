@@ -37,6 +37,7 @@ class Response(AutoName):
     CURRENT_QUESTION = auto()
     ANSWER_SET = auto()
     CURRENT_PLAYER_COUNT = auto()
+    CURRENT_PLAYER_NAMES = auto()
     NEXT_QUESTION = auto()
     QUESTIONS_INFO = auto()
     NO_SUCH_ROOM = auto()
@@ -82,6 +83,7 @@ class Room(object):
 
         self.send_response_to_single(Response.CURRENT_QUESTION, connection)
         self.send_response_to_all(Response.CURRENT_PLAYER_COUNT)
+        self.send_response_to_all(Response.CURRENT_PLAYER_NAMES)
         self.send_response_to_all(Response.QUESTIONS_INFO)
 
     def remove_connection(self, connection: Any) -> None:
@@ -111,7 +113,10 @@ class Room(object):
         
         elif response is Response.CURRENT_PLAYER_COUNT:
             props.update({'count': self.number_of_active_connections})
-        
+
+        elif response is Response.CURRENT_PLAYER_NAMES:
+            props.update({'names': [con.name for con in self.active_connections] })
+            print('sending', props)
         elif response is Response.NEXT_QUESTION:
             type_ = Response.CURRENT_QUESTION.name
             props.update(self.engine.current_question.to_json())
@@ -205,6 +210,10 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
     def open(self):
         self.room = None
+
+    @property 
+    def name(self):
+        return 'Jim'
 
     def on_message(self, message):
         parsed = parse_request_json(message)

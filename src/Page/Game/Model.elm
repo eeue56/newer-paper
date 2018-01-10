@@ -12,6 +12,7 @@ type alias Model =
     , questionIndex : Int
     , roomName : String
     , isStarted : Bool
+    , playerNames : List String
     }
 
 
@@ -27,6 +28,7 @@ defaultModel =
     , questionAmount = 0
     , roomName = ""
     , isStarted = False
+    , playerNames = []
     }
 
 

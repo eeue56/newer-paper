@@ -60,6 +60,9 @@ update msg model =
                         CurrentPlayerCount count ->
                             ( { model | currentPlayerCount = count }, Cmd.none )
 
+                        CurrentPlayerNames names ->
+                            ( { model | playerNames = names }, Cmd.none )
+
                         CurrentQuestionInfo amount index ->
                             ( { model | questionAmount = amount, questionIndex = index }, Cmd.none )
 
@@ -77,6 +80,7 @@ decodeResponse =
         , decodeOpened
         , decodeNoSuchRoom
         , Json.Decode.map CurrentPlayerCount decodeCurrentPlayerCount
+        , Json.Decode.map CurrentPlayerNames decodeCurrentPlayerNames
         , decodeCurrentQuestionInfo
         ]
 
@@ -106,6 +110,13 @@ decodeCurrentPlayerCount =
     Json.Decode.map2 (\_ n -> n)
         (Json.Decode.field "response" <| fieldValue "CURRENT_PLAYER_COUNT")
         (Json.Decode.at [ "props", "count" ] Json.Decode.int)
+
+
+decodeCurrentPlayerNames : Json.Decode.Decoder (List String)
+decodeCurrentPlayerNames =
+    Json.Decode.map2 (\_ n -> n)
+        (Json.Decode.field "response" <| fieldValue "CURRENT_PLAYER_NAMES")
+        (Json.Decode.at [ "props", "names" ] <| Json.Decode.list Json.Decode.string)
 
 
 decodeCurrentQuestionInfo : Json.Decode.Decoder Response
@@ -142,6 +153,7 @@ type Response
     = CurrentQuestion QuestionSet
     | Opened
     | CurrentPlayerCount Int
+    | CurrentPlayerNames (List String)
     | CurrentQuestionInfo Int Int
     | NoSuchRoom
 

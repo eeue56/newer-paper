@@ -140,6 +140,7 @@ viewPreGame model =
         [ center, Element.Attributes.verticalCenter, height fill, width fill ]
         [ Element.row NoStyle [] [ centeredText <| "Waiting for players! Room name:" ++ model.roomName ]
         , Element.row NoStyle [] [ centeredText <| toString model.currentPlayerCount ++ " players joined so far!" ]
+        , Element.row NoStyle [] [ centeredText <| String.join ", " model.playerNames ]
         ]
 
 
